@@ -4,6 +4,17 @@
 
 #define DEBUG
 
+#ifdef DEBUG
+
+void output_instr_data(Decode* s){
+    printf("the unrecognized instr is %032b \n", s->isa.instr.val);
+    printf("the opcode is %5b%2b \n", s->isa.instr.r.opcode6_2, s->isa.instr.r.opcode1_0);
+    printf("the func3 is %3b \n", s->isa.instr.r.funct3);
+    printf("the func7 is %7b \n", s->isa.instr.r.funct7);
+}
+
+#endif
+
 def_all_THelper();
 
 static uint32_t get_instr(Decode* s) {
@@ -95,7 +106,7 @@ def_THelper(load) {
     def_INSTR_TAB("??????? ????? ????? 110 ????? ????? ??", lwu);
     //? myCodes end ------------------------------------------------------------
 #ifdef DEBUG
-    printf("the unrecognized instr is %032b \n", s->isa.instr.val);
+    output_instr_data(s);
 #endif
     return EXEC_ID_inv;
 }
@@ -110,7 +121,7 @@ def_THelper(store) {
     def_INSTR_TAB("??????? ????? ????? 111 ????? ????? ??", sd);
     //? myCodes end ------------------------------------------------------------
 #ifdef DEBUG
-    printf("the unrecognized instr is %032b \n", s->isa.instr.val);
+    output_instr_data(s);
 #endif
     return EXEC_ID_inv;
 }
@@ -131,7 +142,7 @@ def_THelper(arithmetic) {
     // def_INSTR_TAB("0001000 ????? ????? 011 ????? 01100 11",lr_d);
     // def_INSTR_TAB("0001100 ????? ????? 011 ????? 01100 11",sc_d);
 #ifdef DEBUG
-    printf("the unrecognized instr is %032b \n", s->isa.instr.val);
+    output_instr_data(s);
 #endif
     return EXEC_ID_inv;
     //? myCodes end ------------------------------------------------------------
@@ -149,7 +160,7 @@ def_THelper(imm_arithmetic) {
     def_INSTR_TAB("??????? ????? ????? 110 ????? ????? ??", ori);
     def_INSTR_TAB("??????? ????? ????? 111 ????? ????? ??", andi);
 #ifdef DEBUG
-    printf("the unrecognized instr is %032b \n", s->isa.instr.val);
+    output_instr_data(s);
 #endif
     return EXEC_ID_inv;
     //? myCodes end ------------------------------------------------------------
@@ -160,7 +171,7 @@ def_THelper(imm_jump) {
     //? myCodes begin ----------------------------------------------------------
     def_INSTR_TAB("??????? ????? ????? 000 ????? ????? ??", jalr);
 #ifdef DEBUG
-    printf("the unrecognized instr is %032b \n", s->isa.instr.val);
+    output_instr_data(s);
 #endif
     return EXEC_ID_inv;
     //? myCodes end ------------------------------------------------------------
@@ -176,7 +187,7 @@ def_THelper(branch) {
     def_INSTR_TAB("??????? ????? ????? 110 ????? ????? ??", bltu);
     def_INSTR_TAB("??????? ????? ????? 111 ????? ????? ??", bgeu);
 #ifdef DEBUG
-    printf("the unrecognized instr is %032b \n", s->isa.instr.val);
+    output_instr_data(s);
 #endif
     return EXEC_ID_inv;
     //? myCodes end ------------------------------------------------------------
@@ -216,7 +227,7 @@ def_THelper(main) {
     def_INSTR_IDTAB("??????? ????? ????? ??? ????? 11011 11", UJ, branch_no_condition);
     //? myCodes end ------------------------------------------------------------
 #ifdef DEBUG
-    printf("the unrecognized instr is %032b \n", s->isa.instr.val);
+    output_instr_data(s);
 #endif
     return table_inv(s);
 };
