@@ -8,9 +8,9 @@
 
 void output_instr_data(Decode* s){
     printf("the unrecognized instr is %032b \n", s->isa.instr.val);
-    printf("the opcode is %5b%2b \n", s->isa.instr.r.opcode6_2, s->isa.instr.r.opcode1_0);
-    printf("the func3 is %3b \n", s->isa.instr.r.funct3);
-    printf("the func7 is %7b \n", s->isa.instr.r.funct7);
+    printf("the opcode is %05b%02b \n", s->isa.instr.r.opcode6_2, s->isa.instr.r.opcode1_0);
+    printf("the func3  is %03b \n", s->isa.instr.r.funct3);
+    printf("the func7  is %07b \n", s->isa.instr.r.funct7);
 }
 
 #endif
