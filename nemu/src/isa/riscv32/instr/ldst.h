@@ -68,33 +68,41 @@ def_EHelper(lwu) {
     printf("lwu no implemention!\n");
 }
 
+//TODO wait for test these instr
+
 def_EHelper(addi) {
     rtl_addi(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
     // printf("addi no implemention!\n");
 }
 
 def_EHelper(slli) {
-    printf("slli no implemention!\n");
+    rtl_slli(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+    // printf("slli no implemention!\n");
 }
 
 def_EHelper(xori) {
-    printf("xori no implemention!\n");
+    rtl_xori(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+    // printf("xori no implemention!\n");
 }
 
 def_EHelper(srli) {
-    printf("srli no implemention!\n");
+    rtl_srli(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+    // printf("srli no implemention!\n");
 }
 
 def_EHelper(srai) {
-    printf("srai no implemention!\n");
+    rtl_srai(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+    // printf("srai no implemention!\n");
 }
 
 def_EHelper(ori) {
-    printf("ori no implemention!\n");
+    rtl_ori(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+    // printf("ori no implemention!\n");
 }
 
 def_EHelper(andi) {
-    printf("andi no implemention!\n");
+    rtl_andi(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+    // printf("andi no implemention!\n");
 }
 
 def_EHelper(jalr) {
