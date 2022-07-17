@@ -11,8 +11,4 @@ define git_commit
 	# -@while (test -e .git/index.lock); do sleep 0.1; done
 	# -@(echo "> $(1)" && echo $(STUID) && hostnamectl && uptime) | git commit -F - $(GITFLAGS)
 	# -@sync
-	-@git add .. -A --ignore-errors
-	-@while (test -e .git/index.lock); do sleep 0.1; done
-	-@(echo "> $(1)" && echo $(STUID) && hostnamectl && uptime) | git commit -F - $(GITFLAGS)
-	-@sync
 endef
