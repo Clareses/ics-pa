@@ -165,6 +165,7 @@ void cpu_exec(uint64_t n) {
     Decode s;
 
     for (; n > 0; n--) {
+        isa_reg_display();
         // cpu's routine ...
         fetch_decode_exec_updatepc(&s);
         //! what's this... it seems like a counter to how many instruction has been exec
