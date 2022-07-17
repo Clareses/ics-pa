@@ -69,7 +69,7 @@ def_EHelper(lwu) {
 }
 
 def_EHelper(addi) {
-    rtl_addi(s, ddest, dsrc1, s->isa.i.simm11_0);
+    rtl_addi(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
     // printf("addi no implemention!\n");
 }
 
