@@ -4,6 +4,9 @@
 
 // TODO complete all these function
 
+//! def_EHelper(name)
+//! static inline void exec_name (Decode *s)
+
 def_EHelper(add) {
     rtl_add(s, ddest, dsrc1, dsrc2);
 }
@@ -66,7 +69,8 @@ def_EHelper(lwu) {
 }
 
 def_EHelper(addi) {
-    printf("addi no implemention!\n");
+    rtl_addi(s, ddest, dsrc1, s->instr.i.simm11_0);
+    // printf("addi no implemention!\n");
 }
 
 def_EHelper(slli) {
