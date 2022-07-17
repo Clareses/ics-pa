@@ -11,7 +11,7 @@
                         f(addi) f(slli) f(xori) f(srli) f(srai) f(ori) f(andi)\
                         f(jalr)\
                         f(sb) f(sh) f(sw) f(sd)\
-                        f(beq) f(bne) f(blt) f(bge) f(bltu) f(bgeu)\
+                        f(beq) f(bne) f(blt) f(bge) f(bltu) f(bgeu) f(auipc)\
                         f(lui) f(jal) f(inv)
                         // R I I_ARI I_JMP S SB U UJ
 

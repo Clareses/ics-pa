@@ -54,47 +54,47 @@ def_EHelper(ld) {
 }
 
 def_EHelper(lbu) {
-    printf("no implemention!\n");
+    printf("lbu no implemention!\n");
 }
 
 def_EHelper(lhu) {
-    printf("no implemention!\n");
+    printf("lhu no implemention!\n");
 }
 
 def_EHelper(lwu) {
-    printf("no implemention!\n");
+    printf("lwu no implemention!\n");
 }
 
 def_EHelper(addi) {
-    printf("no implemention!\n");
+    printf("addi no implemention!\n");
 }
 
 def_EHelper(slli) {
-    printf("no implemention!\n");
+    printf("slli no implemention!\n");
 }
 
 def_EHelper(xori) {
-    printf("no implemention!\n");
+    printf("xori no implemention!\n");
 }
 
 def_EHelper(srli) {
-    printf("no implemention!\n");
+    printf("srli no implemention!\n");
 }
 
 def_EHelper(srai) {
-    printf("no implemention!\n");
+    printf("srai no implemention!\n");
 }
 
 def_EHelper(ori) {
-    printf("no implemention!\n");
+    printf("ori no implemention!\n");
 }
 
 def_EHelper(andi) {
-    printf("no implemention!\n");
+    printf("andi no implemention!\n");
 }
 
 def_EHelper(jalr) {
-    printf("no implemention!\n");
+    printf("jalr no implemention!\n");
 }
 
 def_EHelper(sb) {
@@ -114,29 +114,33 @@ def_EHelper(sd) {
 }
 
 def_EHelper(beq) {
-    printf("no implemention!\n");
+    printf("beq no implemention!\n");
 }
 
 def_EHelper(bne) {
-    printf("no implemention!\n");
+    printf("bne no implemention!\n");
 }
 
 def_EHelper(blt) {
-    printf("no implemention!\n");
+    printf("blt no implemention!\n");
 }
 
 def_EHelper(bge) {
-    printf("no implemention!\n");
+    printf("bge no implemention!\n");
 }
 
 def_EHelper(bltu) {
-    printf("no implemention!\n");
+    printf("bltu no implemention!\n");
 }
 
 def_EHelper(bgeu) {
-    printf("no implemention!\n");
+    printf("bgeu no implemention!\n");
 }
 
 def_EHelper(jal) {
-    printf("no implemention!\n");
+    printf("jal no implemention!\n");
+}
+
+def_EHelper(auipc) {
+    printf("auipc no implemention!\n");
 }
