@@ -12,7 +12,8 @@
   }
 
 #define def_rtl_compute_imm(name) \
-  static inline def_rtl(name ## i, rtlreg_t* dest, const rtlreg_t* src1, const sword_t imm) { \
+static inline \
+def_rtl(name ## i, rtlreg_t* dest, const rtlreg_t* src1, const sword_t imm) { \
     *dest = concat(c_, name) (*src1, imm); \
   }
 
@@ -23,6 +24,13 @@
 // compute
 
 def_rtl_compute_reg_imm(add)
+/*
+def_rtl_add(word_t* dest, const word_t* src1, const rtlreg_t* src2){
+  *dest = c_add(*src1, *src2);=>
+  *dest = *src1 + *src2;
+
+}
+*/
 def_rtl_compute_reg_imm(sub)
 def_rtl_compute_reg_imm(and)
 def_rtl_compute_reg_imm(or)
@@ -101,15 +109,24 @@ static inline def_rtl(div64s_r, rtlreg_t* dest,
 
 // memory
 
-static inline def_rtl(lm, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len) {
+// rtl_lm(Decode *s, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len);
+//! load memory
+static inline 
+def_rtl(lm, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len) {
   *dest = vaddr_read(*addr + offset, len);
 }
 
-static inline def_rtl(sm, const rtlreg_t *src1, const rtlreg_t* addr, word_t offset, int len) {
+// rtl_sm(Decode *s, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len);
+//! store memory
+static inline 
+def_rtl(sm, const rtlreg_t *src1, const rtlreg_t* addr, word_t offset, int len) {
   vaddr_write(*addr + offset, len, *src1);
 }
 
-static inline def_rtl(lms, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len) {
+// rtl_lms(Decode *s, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len);
+//! load memory 
+static inline 
+def_rtl(lms, rtlreg_t *dest, const rtlreg_t* addr, word_t offset, int len) {
   word_t val = vaddr_read(*addr + offset, len);
   switch (len) {
     case 4: *dest = (sword_t)(int32_t)val; return;

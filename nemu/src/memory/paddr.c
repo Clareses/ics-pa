@@ -6,6 +6,7 @@
 #if   defined(CONFIG_TARGET_AM)
 static uint8_t *pmem = NULL;
 #else
+// 一个大小128MB的内存
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
 
@@ -27,12 +28,15 @@ void init_mem() {
   assert(pmem);
 #endif
 #ifdef CONFIG_MEM_RANDOM
+  //获取内存的指针
   uint32_t *p = (uint32_t *)pmem;
   int i;
+  //把内存都随机化了（为啥啊，因为一开机的时候内存的状态是随机的吗？）
   for (i = 0; i < (int) (CONFIG_MSIZE / sizeof(p[0])); i ++) {
     p[i] = rand();
   }
 #endif
+  //输出日志，可以先不管
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]",
       (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE);
 }

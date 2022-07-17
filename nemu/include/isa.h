@@ -19,7 +19,7 @@ void isa_reg_display();
 word_t isa_reg_str2val(const char *name, bool *success);
 
 // exec
-struct Decode;
+struct Decode; 
 int isa_fetch_decode(struct Decode *s);
 
 // memory
