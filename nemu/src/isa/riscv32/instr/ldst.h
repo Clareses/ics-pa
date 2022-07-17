@@ -145,6 +145,6 @@ def_EHelper(auipc) {
     printf("auipc no implemention!\n");
 }
 
-def_EHelper(lui) {
-    printf("lui no implemention!\n");
-}
+// def_EHelper(lui) {
+//     printf("lui no implemention!\n");
+// }
