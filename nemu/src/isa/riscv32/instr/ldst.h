@@ -7,53 +7,95 @@
 //! def_EHelper(name)
 //! static inline void exec_name (Decode *s)
 
+#define DEBUG
+
+#ifdef DEBUG
+#include <stdio.h>
+#endif
+
 def_EHelper(add) {
     rtl_add(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    printf("execute add!\n");
+#endif
 }
 
 def_EHelper(sub) {
     rtl_sub(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    printf("execute sub!\n");
+#endif
 }
 
 
 def_EHelper(sll) {
     rtl_sll(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    printf("execute sll!\n");
+#endif
 }
 
 def_EHelper(xor) {
     rtl_xor(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    printf("execute xor!\n");
+#endif
 }
 
 def_EHelper(srl) {
     rtl_srl(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    printf("execute srl!\n");
+#endif
 }
 
 def_EHelper(sra) {
     rtl_sra(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    printf("execute sra!\n");
+#endif
 }
 
 def_EHelper(or) {
     rtl_or(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    printf("execute or!\n");
+#endif
 }
 
 def_EHelper(and) {
     rtl_and(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    printf("execute and!\n");
+#endif
 }
 
 def_EHelper(lb) {
     rtl_lm(s, ddest, dsrc1, id_src2->imm, 1);
+#ifdef DEBUG
+    printf("execute lb!\n");
+#endif
 }
 
 def_EHelper(lh) {
     rtl_lm(s, ddest, dsrc1, id_src2->imm, 2);
+#ifdef DEBUG
+    printf("execute lh!\n");
+#endif
 }
 
 def_EHelper(lw) {
     rtl_lm(s, ddest, dsrc1, id_src2->imm, 4);
+#ifdef DEBUG
+    printf("execute lw!\n");
+#endif
 }
 
 def_EHelper(ld) {
     rtl_lm(s, ddest, dsrc1, id_src2->imm, 8);
+#ifdef DEBUG
+    printf("execute ld!\n");
+#endif
 }
 
 def_EHelper(lbu) {
@@ -72,36 +114,57 @@ def_EHelper(lwu) {
 
 def_EHelper(addi) {
     rtl_addi(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+#ifdef DEBUG
+    printf("execute addi!\n");
+#endif
     // printf("addi no implemention!\n");
 }
 
 def_EHelper(slli) {
     rtl_slli(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+#ifdef DEBUG
+    printf("execute slli!\n");
+#endif
     // printf("slli no implemention!\n");
 }
 
 def_EHelper(xori) {
     rtl_xori(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+#ifdef DEBUG
+    printf("execute xori!\n");
+#endif
     // printf("xori no implemention!\n");
 }
 
 def_EHelper(srli) {
     rtl_srli(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+#ifdef DEBUG
+    printf("execute srli!\n");
+#endif
     // printf("srli no implemention!\n");
 }
 
 def_EHelper(srai) {
     rtl_srai(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+#ifdef DEBUG
+    printf("execute srai!\n");
+#endif
     // printf("srai no implemention!\n");
 }
 
 def_EHelper(ori) {
     rtl_ori(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+#ifdef DEBUG
+    printf("execute ori!\n");
+#endif
     // printf("ori no implemention!\n");
 }
 
 def_EHelper(andi) {
     rtl_andi(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+#ifdef DEBUG
+    printf("execute andi!\n");
+#endif
     // printf("andi no implemention!\n");
 }
 
@@ -111,18 +174,30 @@ def_EHelper(jalr) {
 
 def_EHelper(sb) {
     rtl_sm(s, ddest, dsrc1, id_src2->imm, 1);
+#ifdef DEBUG
+    printf("execute sb!\n");
+#endif
 }
 
 def_EHelper(sh) {
     rtl_sm(s, ddest, dsrc1, id_src2->imm, 2);
+#ifdef DEBUG
+    printf("execute sh!\n");
+#endif
 }
 
 def_EHelper(sw) {
     rtl_sm(s, ddest, dsrc1, id_src2->imm, 4);
+#ifdef DEBUG
+    printf("execute sw!\n");
+#endif
 }
 
 def_EHelper(sd) {
     rtl_sm(s, ddest, dsrc1, id_src2->imm, 8);
+#ifdef DEBUG
+    printf("execute sd!\n");
+#endif
 }
 
 def_EHelper(beq) {
