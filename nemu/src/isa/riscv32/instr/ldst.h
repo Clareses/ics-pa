@@ -7,7 +7,7 @@
 //! def_EHelper(name)
 //! static inline void exec_name (Decode *s)
 
-// #define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 #include <stdio.h>
@@ -235,7 +235,12 @@ def_EHelper(blt) {
 }
 
 def_EHelper(bge) {
-    printf("bge no implemention\n");
+    if(*(id_src1->preg) >= *(id_src2->preg))
+        s->dnpc = s->pc + id_dest->simm;
+#ifdef DEBUG
+    output_debug_info(s,"bge\n");
+    isa_reg_display();
+#endif
 }
 
 def_EHelper(bltu) {
