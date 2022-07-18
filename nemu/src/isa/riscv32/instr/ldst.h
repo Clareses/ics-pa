@@ -174,7 +174,11 @@ def_EHelper(andi) {
 }
 
 def_EHelper(jalr) {
-    printf("jalr no implemention!\n");
+    rtl_addi(s, ddest, &s->pc, 4);
+    rtl_addi(s, &s->dnpc, dsrc1, s->isa.instr.i.simm11_0);
+#ifdef DEBUG
+    printf("execute jalr!\n");
+#endif
 }
 
 def_EHelper(sb) {
@@ -234,7 +238,11 @@ def_EHelper(jal) {
 }
 
 def_EHelper(auipc) {
-    printf("auipc no implemention!\n");
+    rtl_addi(s, &s->dnpc, &s->pc, s->isa.instr.u.imm31_12 << 12);
+    rtl_addi(s, ddest, &s->dnpc, 0);
+#ifdef DEBUG
+    printf("execute auipc!");
+#endif
 }
 
 // def_EHelper(lui) {
