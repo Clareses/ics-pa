@@ -81,8 +81,8 @@ static def_DHelper(UJ) {
     simm |= s->isa.instr.uj.imm19_12 << 11;
     simm |= s->isa.instr.uj.imm11 << 10;
     simm |= s->isa.instr.uj.imm10_1;
-    decode_op_r(s, id_src1, s->isa.instr.uj.rd, false);
-    decode_op_i(s, id_dest, simm, true);
+    decode_op_r(s, id_dest, s->isa.instr.uj.rd, false);
+    decode_op_i(s, id_src1, simm, true);
 }
 //? myCodes end ------------------------------------------------------------
 
