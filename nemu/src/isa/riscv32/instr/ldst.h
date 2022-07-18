@@ -238,8 +238,7 @@ def_EHelper(jal) {
 }
 
 def_EHelper(auipc) {
-    rtl_addi(s, &s->dnpc, &s->pc, s->isa.instr.u.imm31_12 << 12);
-    rtl_addi(s, ddest, &s->dnpc, 0);
+    rtl_addi(s, ddest, &s->pc, s->isa.instr.u.imm31_12 << 12);
 #ifdef DEBUG
     printf("execute auipc!");
 #endif
