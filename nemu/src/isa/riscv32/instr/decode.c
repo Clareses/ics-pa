@@ -75,11 +75,13 @@ static def_DHelper(SB) {
 }
 //! decode_UJ
 static def_DHelper(UJ) {
-    sword_t simm = 0x00;
-    simm |= s->isa.instr.uj.imm20 << 20;
-    simm |= s->isa.instr.uj.imm20 << 19;
-    simm |= s->isa.instr.uj.imm19_12 << 11;
-    simm |= s->isa.instr.uj.imm11 << 10;
+    printf("val = 20:%01b \n 19_12:%08b \n 11:%01b \n 10_1:%010b\n",s->isa.instr.uj.imm20,s->isa.instr.uj.imm19_12,s->isa.instr.uj.imm11,s->isa.instr.uj.imm10_1);
+    sword_t simm = s->isa.instr.uj.imm20;
+    simm <<= 8;
+    simm |= s->isa.instr.uj.imm19_12;
+    simm <<= 1;
+    simm |= s->isa.instr.uj.imm11;
+    simm <<= 10;
     simm |= s->isa.instr.uj.imm10_1;
     decode_op_r(s, id_dest, s->isa.instr.uj.rd, false);
     decode_op_i(s, id_src1, simm, true);
