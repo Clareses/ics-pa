@@ -116,9 +116,9 @@ def_EHelper(addi) {
    
 #ifdef DEBUG
     printf("execute addi!\n");
-    printf("ddest=0x%x | %b\n", *ddest, *ddest);
-    printf("dsrc1=0x%x | %b\n", *dsrc1, *dsrc1);
-    printf("imm=0x%x | %b\n", s->isa.instr.i.simm11_0, s->isa.instr.i.simm11_0);
+    // printf("ddest=0x%x | %b\n", *ddest, *ddest);
+    // printf("dsrc1=0x%x | %b\n", *dsrc1, *dsrc1);
+    // printf("imm=0x%x | %b\n", s->isa.instr.i.simm11_0, s->isa.instr.i.simm11_0);
 #endif
 
     rtl_addi(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
@@ -237,14 +237,15 @@ def_EHelper(jal) {
     rtl_addi(s, ddest, &s->pc, 4);
     rtl_addi(s, &s->dnpc, &s->pc, id_src1->simm);
 #ifdef DEBUG
-    printf("execute jal!");
+    printf("execute jal!\n");
+    printf("the step is %d | %x",id_src1->simm, id_src1->simm);
 #endif
 }
 
 def_EHelper(auipc) {
     rtl_addi(s, ddest, &s->pc, s->isa.instr.u.imm31_12 << 12);
 #ifdef DEBUG
-    printf("execute auipc!");
+    printf("execute auipc!\n");
 #endif
 }
 
