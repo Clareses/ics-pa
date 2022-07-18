@@ -26,7 +26,8 @@ static uint32_t get_instr(Decode* s) {
     void concat(decode_op_, name)(Decode * s, Operand * op, word_t val, bool flag)
 
 static def_DopHelper(i) {
-    op->imm = val;
+    if(flag == false) op->imm = val;
+    else op->simm = val;
 }
 
 static def_DopHelper(r) {
@@ -38,19 +39,19 @@ static def_DopHelper(r) {
 //! decode_I
 static def_DHelper(I) {
     decode_op_r(s, id_src1, s->isa.instr.i.rs1, false);
-    decode_op_i(s, id_src2, s->isa.instr.i.simm11_0, false);
+    decode_op_i(s, id_src2, s->isa.instr.i.simm11_0, true);
     decode_op_r(s, id_dest, s->isa.instr.i.rd, true);
 }
 //! decode_U
 static def_DHelper(U) {
-    decode_op_i(s, id_src1, s->isa.instr.u.imm31_12 << 12, true);
+    decode_op_i(s, id_src1, s->isa.instr.u.imm31_12 << 12, false);
     decode_op_r(s, id_dest, s->isa.instr.u.rd, true);
 }
 //! decode_S
 static def_DHelper(S) {
     decode_op_r(s, id_src1, s->isa.instr.s.rs1, false);
     sword_t simm = (s->isa.instr.s.simm11_5 << 5) | s->isa.instr.s.imm4_0;
-    decode_op_i(s, id_src2, simm, false);
+    decode_op_i(s, id_src2, simm, true);
     decode_op_r(s, id_dest, s->isa.instr.s.rs2, false);
 }
 //! decode_R
@@ -68,7 +69,7 @@ static def_DHelper(SB) {
     simm |= s->isa.instr.sb.imm11 << 10;
     simm |= s->isa.instr.sb.imm10_5 << 4;
     simm |= s->isa.instr.sb.imm4_1 << 0;
-    decode_op_i(s, id_dest, simm, false);
+    decode_op_i(s, id_dest, simm, true);
     decode_op_r(s, id_src1, s->isa.instr.sb.rs1, false);
     decode_op_r(s, id_src2, s->isa.instr.sb.rs2, false);
 }
@@ -81,7 +82,7 @@ static def_DHelper(UJ) {
     simm |= s->isa.instr.uj.imm11 << 10;
     simm |= s->isa.instr.uj.imm10_1;
     decode_op_r(s, id_src1, s->isa.instr.uj.rd, false);
-    decode_op_i(s, id_dest, simm, false);
+    decode_op_i(s, id_dest, simm, true);
 }
 //? myCodes end ------------------------------------------------------------
 
