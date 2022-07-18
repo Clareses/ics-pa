@@ -113,10 +113,15 @@ def_EHelper(lwu) {
 //TODO wait for test these instr
 
 def_EHelper(addi) {
-    rtl_addi(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
+   
 #ifdef DEBUG
     printf("execute addi!\n");
+    printf("ddest=0x%x | %b\n", ddest);
+    printf("dsrc1=0x%x | %b\n", dsrc1);
+    printf("imm=0x%x | %b\n", s->isa.instr.i.simm11_0);
 #endif
+
+    rtl_addi(s, ddest, dsrc1, s->isa.instr.i.simm11_0);
     // printf("addi no implemention!\n");
 }
 
