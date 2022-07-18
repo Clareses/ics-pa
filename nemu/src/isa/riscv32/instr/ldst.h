@@ -234,7 +234,11 @@ def_EHelper(bgeu) {
 }
 
 def_EHelper(jal) {
-    printf("jal no implemention!\n");
+    rtl_addi(s, ddest, &s->pc, 4);
+    rtl_addi(s, &s->dnpc, &s->pc, id_src1->simm);
+#ifdef DEBUG
+    printf("execute jal!");
+#endif
 }
 
 def_EHelper(auipc) {
