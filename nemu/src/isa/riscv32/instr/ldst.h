@@ -7,7 +7,6 @@
 //! def_EHelper(name)
 //! static inline void exec_name (Decode *s)
 
-#define DEBUG
 
 #ifdef DEBUG
 #include <stdio.h>

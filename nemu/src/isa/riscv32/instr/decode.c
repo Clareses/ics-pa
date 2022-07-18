@@ -75,7 +75,6 @@ static def_DHelper(SB) {
 }
 //! decode_UJ
 static def_DHelper(UJ) {
-    printf("val = 20:%01b \n 19_12:%08b \n 11:%01b \n 10_1:%010b\n",s->isa.instr.uj.imm20,s->isa.instr.uj.imm19_12,s->isa.instr.uj.imm11,s->isa.instr.uj.imm10_1);
     sword_t simm = -s->isa.instr.uj.imm20;
     simm <<= 8;
     simm |= s->isa.instr.uj.imm19_12;
