@@ -27,7 +27,7 @@
 ! then call the table_lw/.....(a lot of instructions). Finally, this tab-
 ! le_xx (defined in 'def_all_THelper'), return a new EXEC_ID to idx...
 
- ! if want to add some ISA, 
+ ! if want to add some ISA instr, 
  ! first should add some instr type in isa-def.h
  ! then can find the Defination of INSTR_LIST in file 'isa-all-instr.h'
  ! add the pattern of the instruction into decode.c
