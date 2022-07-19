@@ -9,6 +9,8 @@
 
 #define DEBUG
 
+#include <stdint.h>
+
 #ifdef DEBUG
 #include <stdio.h>
 
@@ -76,43 +78,52 @@ def_EHelper(and) {
 }
 
 def_EHelper(lb) {
-    rtl_lm(s, ddest, dsrc1, id_src2->imm, 1);
+    rtl_lms(s, ddest, dsrc1, id_src2->imm, 1);
 #ifdef DEBUG
     output_debug_info(s,"lb\n");
 #endif
 }
 
 def_EHelper(lh) {
-    rtl_lm(s, ddest, dsrc1, id_src2->imm, 2);
+    rtl_lms(s, ddest, dsrc1, id_src2->imm, 2);
 #ifdef DEBUG
     output_debug_info(s,"lh\n");
 #endif
 }
 
 def_EHelper(lw) {
-    rtl_lm(s, ddest, dsrc1, id_src2->imm, 4);
+    rtl_lms(s, ddest, dsrc1, id_src2->imm, 4);
 #ifdef DEBUG
     output_debug_info(s,"lw\n");
 #endif
 }
 
 def_EHelper(ld) {
-    rtl_lm(s, ddest, dsrc1, id_src2->imm, 8);
+    rtl_lms(s, ddest, dsrc1, id_src2->imm, 8);
 #ifdef DEBUG
     output_debug_info(s,"ld\n");
 #endif
 }
 
 def_EHelper(lbu) {
-    printf("lbu no implemention\n");
+    rtl_lm(s, ddest, dsrc1, id_src2->imm, 1);
+#ifdef DEBUG
+    output_debug_info(s,"lbu\n");
+#endif
 }
 
 def_EHelper(lhu) {
-    printf("lhu no implemention\n");
+    rtl_lm(s, ddest, dsrc1, id_src2->imm, 2);
+#ifdef DEBUG
+    output_debug_info(s,"lhu\n");
+#endif
 }
 
 def_EHelper(lwu) {
-    printf("lwu no implemention\n");
+    rtl_lm(s, ddest, dsrc1, id_src2->imm, 4);
+#ifdef DEBUG
+    output_debug_info(s,"lwu\n");
+#endif
 }
 
 //TODO wait for test these instr
@@ -223,32 +234,50 @@ def_EHelper(beq) {
 }
 
 def_EHelper(bne) {
-    if(*(id_src1->preg) != *(id_src2->preg))
+    // isa_reg_display();
+    if((int)*(id_src1->preg) != (int)*(id_src2->preg)){
         s->dnpc = s->pc + id_dest->simm;
+        // printf("Branch!, src1 = 0x%08x , src2 = 0x%08x\n", *(id_src1->preg),*(id_src2->preg));
+    }
 #ifdef DEBUG
     output_debug_info(s,"bne\n");
 #endif
 }
 
 def_EHelper(blt) {
-    printf("blt no implemention\n");
+    if((int)*(id_src1->preg) < (int)*(id_src2->preg)){
+        s->dnpc = s->pc + id_dest->simm;
+    }
+#ifdef DEBUG
+    output_debug_info(s,"bge\n");
+#endif
 }
 
 def_EHelper(bge) {
-    if(*(id_src1->preg) >= *(id_src2->preg))
+    if((int)*(id_src1->preg) >= (int)*(id_src2->preg)){
         s->dnpc = s->pc + id_dest->simm;
+    }
 #ifdef DEBUG
     output_debug_info(s,"bge\n");
-    isa_reg_display();
 #endif
 }
 
 def_EHelper(bltu) {
-    printf("bltu no implemention\n");
+    if(*(id_src1->preg) < *(id_src2->preg)){
+        s->dnpc = s->pc + id_dest->simm;
+    }
+#ifdef DEBUG
+    output_debug_info(s,"bge\n");
+#endif
 }
 
 def_EHelper(bgeu) {
-    printf("bgeu no implemention\n");
+    if(*(id_src1->preg) >= *(id_src2->preg)){
+        s->dnpc = s->pc + id_dest->simm;
+    }
+#ifdef DEBUG
+    output_debug_info(s,"bge\n");
+#endif
 }
 
 def_EHelper(jal) {
@@ -297,5 +326,56 @@ def_EHelper(lui) {
     rtl_li(s, ddest, id_src1->imm);
 #ifdef DEBUG
     output_debug_info(s,"lui\n");
+#endif
+}
+
+def_EHelper(slt) {
+    int rs1 = *dsrc1;
+    int rs2 = *dsrc2;
+    if(rs1 < rs2) {
+        *ddest = 1;
+    } else {
+        *ddest = 0;
+    }
+#ifdef DEBUG
+    output_debug_info(s,"slt\n");
+#endif
+}
+
+def_EHelper(sltu) {
+    unsigned int rs1 = *dsrc1;
+    unsigned int rs2 = *dsrc2;
+    if(rs1 < rs2) {
+        *ddest = 1;
+    } else {
+        *ddest = 0;
+    }
+#ifdef DEBUG
+    output_debug_info(s,"sltu\n");
+#endif
+}
+
+def_EHelper(mul) {
+    rtl_mulu_lo(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    output_debug_info(s,"mul\n");
+#endif
+}
+
+def_EHelper(div) {
+    rtl_divs_q(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    output_debug_info(s,"div\n");
+#endif
+}
+
+def_EHelper(mulh) {
+    printf("!!!  mulh No Implemention  !!!\n");
+}
+
+def_EHelper(divu) {
+    rtl_divu_q(s, ddest, dsrc1, dsrc2);
+#ifdef DEBUG
+    output_debug_info(s,"divu\n");
 #endif
 }

@@ -148,6 +148,7 @@ void fetch_decode(Decode* s, vaddr_t pc) {
 /* Simulate how the CPU works. */
 //! n is the num of step the cpu will exec, if give -1, it will be the largest unsigned number
 void cpu_exec(uint64_t n) {
+    
     g_print_step = (n < MAX_INSTR_TO_PRINT);
     // judge the current state of nemu, if END or ABORT, ask user to reboot
     switch (nemu_state.state) {
@@ -164,7 +165,8 @@ void cpu_exec(uint64_t n) {
     // simulate a virtual Decoder to parse the Instruction
     Decode s;
 
-    for (; n > 0; n--) {
+    for (n = 1340; n > 0; n--) {
+        isa_reg_display();
         // cpu's routine ...
         fetch_decode_exec_updatepc(&s);
         //! what's this... it seems like a counter to how many instruction has been exec

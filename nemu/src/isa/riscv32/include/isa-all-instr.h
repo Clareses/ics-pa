@@ -6,9 +6,9 @@
 // #define INSTR_LIST(f) f(lui) f(lw) f(sw) f(inv) f(nemu_trap)
 
 #define INSTR_LIST(f)   f(nemu_trap)\
-                        f(add) f(sub) f(sll) f(xor) f(srl) f(sra) f(or) f(and)\
+                        f(add) f(sub) f(sll) f(xor) f(srl) f(sra) f(or) f(and) f(slt) f(sltu) f(mul) f(mulh) f(div) f(divu)\
                         f(lb) f(lh) f(lw) f(ld) f(lbu) f(lhu) f(lwu)\
-                        f(addi) f(slli) f(xori) f(srli) f(srai) f(ori) f(andi) f(slti) f(sltiu)\
+                        f(addi) f(slli) f(xori) f(srli) f(srai) f(ori) f(andi)  f(slti) f(sltiu)\
                         f(jalr)\
                         f(sb) f(sh) f(sw) f(sd)\
                         f(beq) f(bne) f(blt) f(bge) f(bltu) f(bgeu) f(auipc)\
