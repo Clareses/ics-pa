@@ -72,11 +72,11 @@ def_rtl_compute_reg(divs_q)
 def_rtl_compute_reg(divs_r)
 
 #ifdef CONFIG_ISA64
+def_rtl_compute_reg(remw)
+def_rtl_compute_reg(remuw)
 def_rtl_compute_reg(mulw)
 def_rtl_compute_reg(divw)
 def_rtl_compute_reg(divuw)
-def_rtl_compute_reg(remw)
-def_rtl_compute_reg(remuw)
 #endif
 
 static inline def_rtl(div64u_q, rtlreg_t* dest,
