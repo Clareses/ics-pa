@@ -19,10 +19,13 @@ static uint64_t g_timer = 0;  // unit: us
 static bool g_print_step = false;
 const rtlreg_t rzero = 0;
 rtlreg_t tmp_reg[4];
+IRingBuf iringbuf;
 
 void device_update();
 void fetch_decode(Decode* s, vaddr_t pc);
 
+// trace is to record the running info, difftest is to test whether the
+// watchpoint changed
 static void trace_and_difftest(Decode* _this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
     if (ITRACE_COND)
@@ -49,12 +52,12 @@ static void trace_and_difftest(Decode* _this, vaddr_t dnpc) {
 
 #define FILL_EXEC_TABLE(name) [concat(EXEC_ID_, name)] = concat(exec_, name),
 
-//TODO unfinish: we need trace the function place by this table
+// TODO unfinish: we need trace the function place by this table
 //? myCodes begin ----------------------------------------------------------
 static const void* g_exec_table[TOTAL_INSTR] = {
     MAP(INSTR_LIST, FILL_EXEC_TABLE)};
 
-// this macro extend to: 
+// this macro extend to:
 // g_exec_table[TOTAL_INSTR] = { INSTR_LIST(FILL_EXEC_TABLE) } =>
 // {
 //    [id] = function,
@@ -67,9 +70,11 @@ static const void* g_exec_table[TOTAL_INSTR] = {
 static void fetch_decode_exec_updatepc(Decode* s) {
     // fetch instruction and decode? the result may saved in Decode* s
     // after RTFSC, we find that it just update some value in Decode
-    // and what's better, simulator doesn't implement a pipeline, we don't need to think about some fucking things about it
+    // and what's better, simulator doesn't implement a pipeline, we don't need
+    // to think about some fucking things about it
     fetch_decode(s, cpu.pc);
-    //! this is very important, EHelper record the handler of instruction, it updated in fetch_decode
+    //! this is very important, EHelper record the handler of instruction, it
+    //! updated in fetch_decode
     s->EHelper(s);
     // update the cpu's pc
     cpu.pc = s->dnpc;
@@ -81,14 +86,50 @@ static void statistic() {
     Log("host time spent = " NUMBERIC_FMT " us", g_timer);
     Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_instr);
     if (g_timer > 0)
-        Log("simulation frequency = " NUMBERIC_FMT " instr/s", g_nr_guest_instr * 1000000 / g_timer);
+        Log("simulation frequency = " NUMBERIC_FMT " instr/s",
+            g_nr_guest_instr * 1000000 / g_timer);
     else
-        Log("Finish running in less than 1 us and can not calculate the simulation frequency");
+        Log("Finish running in less than 1 us and can not calculate the "
+            "simulation frequency");
 }
 
 void assert_fail_msg() {
+    output_iringbuf(&iringbuf);
     isa_reg_display();
     statistic();
+}
+
+void write_instr_log(char* buffer_list[], Decode* s) {
+    if (*buffer_list == NULL)
+        return;
+    char buffer[128] = {0};
+    char* p = buffer;
+    p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
+    // ilen maybe means instruction length
+    int ilen = s->snpc - s->pc;  // always 4 bytes in RISCV32
+    uint8_t* instr = (uint8_t*)&s->isa.instr.val;
+    for (int i = 0; i < ilen; i++) {
+        p += snprintf(p, 4, " %02x", instr[i]);
+    }
+    // this part is for align the longest instr with the shortest instr
+    int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
+    int space_len = ilen_max - ilen;
+    if (space_len < 0)
+        space_len = 0;
+    space_len = space_len * 3 + 1;
+    memset(p, ' ', space_len);
+    p += space_len;
+    // output the disassemble code to log... before call it, define it first~
+    // in fact, it's a function provide by LLVM compiler... implement in file
+    // 'disasm.cc'
+    void disassemble(char* str, int size, uint64_t pc, uint8_t* code,
+                     int nbyte);
+    disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
+                MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc),
+                (uint8_t*)&s->isa.instr.val, ilen);
+    for(size_t i = 0; i < 2; i++){
+        strncpy(buffer_list[i], buffer, 128);
+    }
 }
 
 // fetch a instruction from pc, decode and save the result in s
@@ -102,13 +143,14 @@ void fetch_decode(Decode* s, vaddr_t pc) {
     //! we put the code here for convinience
     // *int isa_fetch_decode(Decode *s) {
     // ~    // save the instruction in decode.isa.instr.val
-    // ~    // the instr_fetch will modify the snpc and return a 32bit instruction
-    // *    s->isa.instr.val = instr_fetch(&s->snpc, 4);  
+    // ~    // the instr_fetch will modify the snpc and return a 32bit
+    // instruction
+    // *    s->isa.instr.val = instr_fetch(&s->snpc, 4);
     // *    int idx = table_main(s);
     // *    return idx;
     // *}
     //! we can find that the idx is the index of the handler for an instruction
-    int idx = isa_fetch_decode(s);    
+    int idx = isa_fetch_decode(s);
 
     //! suppose dnpc is equal to snpc... it seems like we can only use one pc...
     s->dnpc = s->snpc;
@@ -116,47 +158,31 @@ void fetch_decode(Decode* s, vaddr_t pc) {
     //* so that we can call it in fetch_decode_exec_updatepc function
     s->EHelper = g_exec_table[idx];
 
+    char* buffer_list[] = {
+        get_next_buf(&iringbuf),
 #ifdef CONFIG_ITRACE
-    
-    // this part is for the tracer to output the instruction
-    char* p = s->logbuf;
-    p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
-    // ilen maybe means instruction length
-    int ilen = s->snpc - s->pc;
-    int i;
-    // output the instruction per 2bits
-    uint8_t* instr = (uint8_t*)&s->isa.instr.val;
-    for (i = 0; i < ilen; i++) {
-        p += snprintf(p, 4, " %02x", instr[i]);
-    }
-    int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
-    int space_len = ilen_max - ilen;
-    if (space_len < 0)
-        space_len = 0;
-    space_len = space_len * 3 + 1;
-    // it seems like reuse the p to put some other info
-    memset(p, ' ', space_len);
-    p += space_len;
-    // output the disassemble code to log... before call it, define it first~
-    // in fact, it's a function provide by LLVM compiler... implement in file 'disasm.cc'
-    void disassemble(char* str, int size, uint64_t pc, uint8_t* code, int nbyte);
-    disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
-                MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t*)&s->isa.instr.val, ilen);
-#endif
+        s->logbuf,
+#endif     
+    };
+    write_instr_log(buffer_list,s);
 }
 
+
 /* Simulate how the CPU works. */
-//! n is the num of step the cpu will exec, if give -1, it will be the largest unsigned number
+//! n is the num of step the cpu will exec, if give -1, it will be the largest
+//! unsigned number
 void cpu_exec(uint64_t n) {
-    
     g_print_step = (n < MAX_INSTR_TO_PRINT);
     // judge the current state of nemu, if END or ABORT, ask user to reboot
     switch (nemu_state.state) {
         case NEMU_END:
         case NEMU_ABORT:
-            printf("Program execution has ended. To restart the program, exit NEMU and run again.\n");
+            printf(
+                "Program execution has ended. To restart the program, exit "
+                "NEMU and run again.\n");
             return;
-        // if not abort or end, it can only be stop, so can change the state to RUNNING
+        // if not abort or end, it can only be stop, so can change the state to
+        // RUNNING
         default:
             nemu_state.state = NEMU_RUNNING;
     }
@@ -164,12 +190,12 @@ void cpu_exec(uint64_t n) {
     uint64_t timer_start = get_time();
     // simulate a virtual Decoder to parse the Instruction
     Decode s;
-
     for (; n > 0; n--) {
         // isa_reg_display();
         // cpu's routine ...
         fetch_decode_exec_updatepc(&s);
-        //! what's this... it seems like a counter to how many instruction has been exec
+        //! what's this... it seems like a counter to how many instruction has
+        //! been exec
         g_nr_guest_instr++;
         // debug function, check whether a watch point has change
         trace_and_difftest(&s, cpu.pc);
@@ -197,7 +223,11 @@ void cpu_exec(uint64_t n) {
         case NEMU_END:
         case NEMU_ABORT:
             Log("nemu: %s at pc = " FMT_WORD,
-                (nemu_state.state == NEMU_ABORT ? ASNI_FMT("ABORT", ASNI_FG_RED) : (nemu_state.halt_ret == 0 ? ASNI_FMT("HIT GOOD TRAP", ASNI_FG_GREEN) : ASNI_FMT("HIT BAD TRAP", ASNI_FG_RED))),
+                (nemu_state.state == NEMU_ABORT
+                     ? ASNI_FMT("ABORT", ASNI_FG_RED)
+                     : (nemu_state.halt_ret == 0
+                            ? ASNI_FMT("HIT GOOD TRAP", ASNI_FG_GREEN)
+                            : ASNI_FMT("HIT BAD TRAP", ASNI_FG_RED))),
                 nemu_state.halt_pc);
 
         //! this function for what ? ?

@@ -1,0 +1,5 @@
+make default --dry-run --keep-going --print-directory
+make: Entering directory '/home/clares/ics-pa'
+echo "Please run 'make' under any subprojects to compile."
+make: Leaving directory '/home/clares/ics-pa'
+ 

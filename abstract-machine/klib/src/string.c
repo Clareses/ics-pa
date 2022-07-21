@@ -42,9 +42,11 @@ char* strcat(char* dst, const char* src) {
 }
 
 int strcmp(const char* s1, const char* s2) {
-    while (*(s1++) != '\0' && *(s2++) != '\0') {
+    while (*s1 != '\0' && *s2 != '\0') {
         if (*s1 != *s2)
             return *s1 - *s2;
+        s1++;
+        s2++;
     }
     if (*s1 != *s2) {
         return s1[0] == '\0' ? -1 : 1;
@@ -70,15 +72,39 @@ void* memset(void* s, int c, size_t n) {
 }
 
 void* memmove(void* dst, const void* src, size_t n) {
-    panic("Not implemented");
+    uint8_t* src_end = (uint8_t*)src + n;
+    uint8_t* dst_end = (uint8_t*)dst + n;
+    size_t gap = src_end - (uint8_t*)dst;
+    if ((uint8_t*)dst <= src_end && dst_end >= src_end) {
+        uint8_t* dst_tmp = (uint8_t*)dst + gap;
+        uint8_t* src_tmp = (uint8_t*)src + gap;
+        while (dst_tmp != dst_end && src_tmp != src_end) {
+            *(dst_tmp++) = *(src_tmp++);
+        }
+    }
+    for (size_t i = 0; i < n && dst + i != src; i++) {
+        ((uint8_t*)dst)[i] = ((uint8_t*)src)[i];
+    }
+    return dst;
 }
 
 void* memcpy(void* out, const void* in, size_t n) {
-    panic("Not implemented");
+    uint8_t* _out = (uint8_t*)out;
+    uint8_t* _in =  (uint8_t*)in;
+    for(size_t i = 0; i < n; i++){
+        _out[i] = _in[i];
+    }
+    return out;
 }
 
 int memcmp(const void* s1, const void* s2, size_t n) {
-    panic("Not implemented");
+    uint8_t* _s1 = (uint8_t*)s1;
+    uint8_t* _s2 = (uint8_t*)s2;
+    for(size_t i = 0; i < n; i++){
+        if(_s1[i] != _s2[i])
+            return _s1[i] - _s2[i];
+    }
+    return 0;
 }
 
 #endif

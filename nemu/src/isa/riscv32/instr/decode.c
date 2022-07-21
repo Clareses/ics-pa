@@ -43,11 +43,13 @@ static def_DHelper(I) {
     decode_op_i(s, id_src2, s->isa.instr.i.simm11_0, true);
     decode_op_r(s, id_dest, s->isa.instr.i.rd, true);
 }
+
 //! decode_U
 static def_DHelper(U) {
     decode_op_i(s, id_src1, s->isa.instr.u.imm31_12 << 12, false);
     decode_op_r(s, id_dest, s->isa.instr.u.rd, true);
 }
+
 //! decode_S
 static def_DHelper(S) {
     decode_op_r(s, id_src1, s->isa.instr.s.rs1, false);

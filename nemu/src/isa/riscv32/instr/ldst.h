@@ -318,7 +318,6 @@ def_EHelper(jal) {
     rtl_addi(s, &s->dnpc, &s->pc, id_src1->simm);
     gpr(0) = 0;
 #ifdef DEBUG
-    printf("%08x\n", *ddest);
     output_debug_info(s, "jal\n");
     // printf("the step is %d | %x",id_src1->simm, id_src1->simm);
 #endif

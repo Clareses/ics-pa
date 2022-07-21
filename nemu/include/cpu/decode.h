@@ -2,6 +2,7 @@
 #define __CPU_DECODE_H__
 
 #include <isa.h>
+#include "../iringbuf.h"
 
 /*
 ! the Decode Structure include these parts:
@@ -62,7 +63,7 @@ typedef struct Decode {
     Operand dest, src1, src2;
     // record the info of how to parse the instruction
     ISADecodeInfo isa;
-    // log data buffer, ignore
+    // log data buffer
     IFDEF(CONFIG_ITRACE, char logbuf[128]);
 } Decode;
 
@@ -80,7 +81,7 @@ typedef struct Decode {
     def_THelper(name) {                \
         return concat(EXEC_ID_, name); \
     }
-#define def_all_THelper() MAP(INSTR_LIST, def_THelper_body)
+#define def_all_THelper() MAP(INSTR_LIST, def_THelper_body)// => instr_list(def_THelper_body)
 
 // --- prototype of decode helpers ---
 #define def_DHelper(name) void concat(decode_, name)(Decode * s, int width)
@@ -240,6 +241,8 @@ def_INSTR_IDTABW(pattern, id, tab, width) =>
     }
 }
 */
+
+// id is the instr type, tab is the function describe
 #define def_INSTR_IDTABW(pattern, id, tab, width) \
     def_INSTR_raw(pattern_decode, pattern,        \
                   { concat(decode_, id)(s, width); return concat(table_, tab)(s); })
@@ -255,6 +258,7 @@ def_INSTR_IDTAB(pattern, id, tab) =>
     }
 }
 */
+// id is the type of the instr, tab is the function describe
 #define def_INSTR_IDTAB(pattern, id, tab) def_INSTR_IDTABW(pattern, id, tab, 0)
 
 #define def_INSTR_TABW(pattern, tab, width) \
