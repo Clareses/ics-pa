@@ -74,10 +74,10 @@ static long load_img() {
 static int parse_args(int argc, char* argv[]) {
     const struct option table[] = {
         {"batch", no_argument, NULL, 'b'},
-        {"elf", required_argument, NULL, 'e'},
         {"log", required_argument, NULL, 'l'},
         {"diff", required_argument, NULL, 'd'},
         {"port", required_argument, NULL, 'p'},
+        {"elf", optional_argument, NULL, 'e'},
         {"help", no_argument, NULL, 'h'},
         {0, 0, NULL, 0},
     };
@@ -111,16 +111,12 @@ static int parse_args(int argc, char* argv[]) {
                     "REF_SO\n");
                 printf(
                     "\t-p,--port=PORT          run DiffTest with port PORT\n");
-                printf(
-                    "\t-e,--elf=FILE          add a elf file for init function "
-                    "tracer\n");
                 printf("\n");
                 exit(0);
         }
     }
     return 0;
 }
-
 void init_monitor(int argc, char* argv[]) {
     /* Perform some global initialization. */
 
