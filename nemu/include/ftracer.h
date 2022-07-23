@@ -4,18 +4,21 @@
 #include <stdint.h>
 #include <stdio.h>
 
-typedef struct FuncNode {
+struct FuncNode {
     uint32_t addr;
     char func_name[64];
-    FuncNode* next;
-} FuncNode;
+    struct FuncNode *next;
+};
+
+typedef struct FuncNode FuncNode;
 
 typedef struct FuncTracer {
     FuncNode* top;
     uint16_t depth;
+    FILE* fd;
 } FuncTracer;
 
-void init_func_tracer(const char* elf_name, FuncTracer* _this);
+void init_func_tracer(const char* elf_name, const char* log_file_name, FuncTracer* _this);
 
 size_t get_func_index_by_addr(uint32_t addr);
 

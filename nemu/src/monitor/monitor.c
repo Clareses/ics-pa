@@ -138,10 +138,10 @@ void init_monitor(int argc, char* argv[]) {
         init_mat(mat_file);
 #endif
 
-#ifdef CONFIG_FTRACE_COND
-    if (FTRACE_COND)
-        init_func_tracer(elf_file, &functracer);
-#endif
+// #ifdef CONFIG_FTRACE_COND
+    // if (FTRACE_COND)
+        init_func_tracer(elf_file, fct_file, &functracer);
+// #endif
 
     /* 初始化软件内存（其实就是往1GB的数组中随机生成数据...） */
     init_mem();

@@ -5,6 +5,9 @@
         "isa-all-instr.h": "c",
         "ifetch.h": "c",
         "vaddr.h": "c",
-        "getopt.h": "c"
+        "getopt.h": "c",
+        "elf.h": "c",
+        "fcntl.h": "c",
+        "ftracer.h": "c"
     }
 }
