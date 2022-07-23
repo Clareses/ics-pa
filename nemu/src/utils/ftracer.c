@@ -58,8 +58,10 @@ int parse_elf_file(const char* name) {
     // get sec_header from elf_header;
     Elf64_Shdr* sec_header = (Elf64_Shdr*)(mem + elf_header->e_shoff);
     // get sec_str_tab from elf_header and sec_header
+    // TODO fix the bus error 
     char* sec_str_tab =
         (char*)(mem + sec_header[elf_header->e_shstrndx].sh_offset);
+    puts("Parse End\n");
     // find the str_tab and the sym_tab
     uint8_t* str_tab = NULL;
     uint8_t* sym_tab = NULL;
@@ -87,6 +89,7 @@ int parse_elf_file(const char* name) {
         }
         sym_tab_item++;
     }
+
     return 0;
 BAD_PARSE:
     return -1;

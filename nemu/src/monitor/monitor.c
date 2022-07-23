@@ -82,7 +82,7 @@ static int parse_args(int argc, char* argv[]) {
         {0, 0, NULL, 0},
     };
     int o;
-    while ((o = getopt_long(argc, argv, "-bhl:d:p:", table, NULL)) != -1) {
+    while ((o = getopt_long(argc, argv, "-bhl:d:p:e:", table, NULL)) != -1) {
         switch (o) {
             case 'b':
                 sdb_set_batch_mode();
@@ -138,10 +138,10 @@ void init_monitor(int argc, char* argv[]) {
         init_mat(mat_file);
 #endif
 
-// #ifdef CONFIG_FTRACE_COND
-    // if (FTRACE_COND)
+#ifdef CONFIG_FTRACE_COND
+    if (FTRACE_COND)
         init_func_tracer(elf_file, fct_file, &functracer);
-// #endif
+#endif
 
     /* 初始化软件内存（其实就是往1GB的数组中随机生成数据...） */
     init_mem();
