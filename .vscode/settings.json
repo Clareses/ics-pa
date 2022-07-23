@@ -4,6 +4,7 @@
         "iringbuf.h": "c",
         "isa-all-instr.h": "c",
         "ifetch.h": "c",
-        "vaddr.h": "c"
+        "vaddr.h": "c",
+        "getopt.h": "c"
     }
 }

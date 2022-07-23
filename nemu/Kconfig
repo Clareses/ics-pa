@@ -144,6 +144,13 @@ config ITRACE_COND
   string "Only trace instructions when the condition is true"
   default "true"
 
+config MTRACE_COND
+  string "Trace the program's memory access steps"
+  default "true"
+
+config FTRACE_COND
+  string "Trace the program's function access steps"
+  default "true"
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF

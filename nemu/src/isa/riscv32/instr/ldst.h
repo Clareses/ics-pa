@@ -9,6 +9,8 @@
 
 // #define DEBUG
 
+#include <ftracer.h>
+
 #ifdef DEBUG
 #include <stdio.h>
 
@@ -17,6 +19,8 @@ void output_debug_info(Decode* s, const char* str) {
 }
 
 #endif
+
+extern FuncTracer functracer;
 
 def_EHelper(add) {
     rtl_add(s, ddest, dsrc1, dsrc2);
@@ -178,7 +182,6 @@ def_EHelper(srli) {
 #ifdef DEBUG
     output_debug_info(s, "srli\n");
 #endif
-    // printf("srli no implemention\n");
 }
 
 def_EHelper(srai) {
@@ -187,7 +190,6 @@ def_EHelper(srai) {
 #ifdef DEBUG
     output_debug_info(s, "srai\n");
 #endif
-    // printf("srai no implemention\n");
 }
 
 def_EHelper(ori) {
@@ -196,7 +198,6 @@ def_EHelper(ori) {
 #ifdef DEBUG
     output_debug_info(s, "ori\n");
 #endif
-    // printf("ori no implemention\n");
 }
 
 def_EHelper(andi) {
@@ -205,13 +206,21 @@ def_EHelper(andi) {
 #ifdef DEBUG
     output_debug_info(s, "andi\n");
 #endif
-    // printf("andi no implemention\n");
 }
 
 def_EHelper(jalr) {
     rtl_addi(s, ddest, &s->pc, 4);
     rtl_addi(s, &s->dnpc, dsrc1, s->isa.instr.i.simm11_0);
     gpr(0) = 0;
+
+// TODO add some code to record the function return trace
+#ifdef CONFIG_FTRACE_COND
+    if (ddest == &gpr(0) && dsrc1 == &gpr(1))
+        try_ret_func(s->dnpc, s->pc, &functracer);
+    else
+        try_call_func(s->dnpc, s->pc, &functracer);
+#endif
+
 #ifdef DEBUG
     output_debug_info(s, "jalr\n");
 #endif
@@ -250,7 +259,8 @@ def_EHelper(sd) {
 }
 
 def_EHelper(beq) {
-    if (*(id_src1->preg) == *(id_src2->preg)) s->dnpc = s->pc + id_dest->simm;
+    if (*(id_src1->preg) == *(id_src2->preg))
+        s->dnpc = s->pc + id_dest->simm;
     gpr(0) = 0;
 #ifdef DEBUG
     output_debug_info(s, "beq\n");
@@ -258,11 +268,8 @@ def_EHelper(beq) {
 }
 
 def_EHelper(bne) {
-    // isa_reg_display();
     if ((int)*(id_src1->preg) != (int)*(id_src2->preg)) {
         s->dnpc = s->pc + id_dest->simm;
-        // printf("Branch!, src1 = 0x%08x , src2 = 0x%08x\n",
-        // *(id_src1->preg),*(id_src2->preg));
     }
     gpr(0) = 0;
 #ifdef DEBUG
@@ -286,8 +293,6 @@ def_EHelper(bge) {
     }
     gpr(0) = 0;
 #ifdef DEBUG
-    // printf("rs1 = 0x%08x , rs2 = 0x%08x\n", (int)*(id_src1->preg),
-    // (int)*(id_src2->preg));
     output_debug_info(s, "bge\n");
 #endif
 }
@@ -313,13 +318,12 @@ def_EHelper(bgeu) {
 }
 
 def_EHelper(jal) {
-    // if(ddest != )
+    // TODO to add some code to record the function call trace
     rtl_addi(s, ddest, &s->pc, 4);
     rtl_addi(s, &s->dnpc, &s->pc, id_src1->simm);
     gpr(0) = 0;
 #ifdef DEBUG
     output_debug_info(s, "jal\n");
-    // printf("the step is %d | %x",id_src1->simm, id_src1->simm);
 #endif
 }
 
