@@ -40,7 +40,7 @@ FuncNode* new_node(uint32_t addr, const char* name) {
         }                                                  \
     } while (0)
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 void output_func_symtab() {
@@ -52,6 +52,7 @@ void output_func_symtab() {
 #endif
 
 int parse_elf_file(const char* name) {
+    FILE* f = fopen(name, "r");
     // open the elf file
     int fd = open(name, O_RDONLY);
     if (fd < 0)
@@ -66,7 +67,7 @@ int parse_elf_file(const char* name) {
         goto BAD_PARSE;
     // get elf_header from mem
     Elf32_Ehdr* elf_header = (Elf32_Ehdr*)mem;
-    // get sec_header from elf_header;
+    // get sec_header from elf_header
     Elf32_Shdr* sec_header = (Elf32_Shdr*)(mem + elf_header->e_shoff);
     // find the str_tab and the sym_tab
     uint8_t* str_tab = NULL;
