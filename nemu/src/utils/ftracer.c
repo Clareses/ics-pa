@@ -109,15 +109,12 @@ int compare(const void* a, const void* b) {
 void init_func_tracer(const char* elf_name,
                       const char* log_file_name,
                       FuncTracer* _this) {
-    _this->top = new_node(-1, "FUNC_START_POSITION");
+    _this->top = new_node(0, "FUNC_START_POSITION");
     _this->depth = 0;
-
     _this->fd = fopen(log_file_name, "w");
-
     size_t parse_res = parse_elf_file(elf_name);
     qsort(func_symbol_table, func_data_list_length, sizeof(FuncDataItem),
           compare);
-
     if (_this->fd != NULL && !parse_res) {
         init_success_flag = 1;
 #ifdef DEBUG
@@ -132,9 +129,10 @@ size_t get_func_index_by_addr(uint32_t addr) {
     // we choose the linear search to get result
     // it require the list has been sorted
     size_t i = 0;
-    while (i < func_data_list_length && func_symbol_table[i].addr > addr) {
+    while (i < func_data_list_length && func_symbol_table[i].addr <= addr) {
         i++;
     }
+    i--;
     return i;
 }
 
@@ -148,7 +146,7 @@ void call_func(uint32_t src_addr, size_t table_index, FuncTracer* _this) {
     fprintf(_this->fd, "0x%08x:", src_addr);
     for (int i = 0; i < _this->depth; i++)
         fputs("| ", _this->fd);
-    fprintf(_this->fd, "-call [%s at 0x%08x]\n", name, dst_addr);
+    fprintf(_this->fd, "+--call [%s@0x%08x]\n", name, dst_addr);
     _this->depth += 1;
 }
 
@@ -156,37 +154,38 @@ void ret_func(uint32_t src_addr, FuncTracer* _this) {
     FuncNode* old = _this->top;
     _this->top = old->next;
     // output the function info
+    _this->depth -= 1;
     fprintf(_this->fd, "0x%08x:", src_addr);
     for (int i = 0; i < _this->depth; i++)
         fputs("| ", _this->fd);
-    fprintf(_this->fd, "-ret [%s]\n", old->func_name);
-    _this->depth -= 1;
+    fprintf(_this->fd, "+--ret  [%s]\n", old->func_name);
     free(old);
 }
 
-// int is_call_function(uint32_t dst_addr, FuncTracer* _this) {
-//     size_t list_index = get_func_index_by_addr(dst_addr);
-//     if(_this->top->addr != func_data_list[list_index].addr)
-//         return 1;
-//     return 0;
-// }
 
-void try_call_func(uint32_t dst_addr, uint32_t src_addr, FuncTracer* _this) {
-    check_flag;
-    size_t index = get_func_index_by_addr(dst_addr);
-    // printf("try call!%d\n", (int)index);
-    if (func_symbol_table[index].addr == dst_addr) {
-        call_func(src_addr, index, _this);
-    }
-}
-
-void try_ret_func(uint32_t dst_addr, uint32_t src_addr, FuncTracer* _this) {
-    check_flag;
-    puts("try ret!\n");
-    size_t index = get_func_index_by_addr(dst_addr);
+void try_ret_func(size_t index, uint32_t src_addr, FuncTracer* _this) {
     while (_this->top->addr != func_symbol_table[index].addr) {
+        if (_this->top->addr == 0)
+            return;
         ret_func(src_addr, _this);
     }
     ret_func(src_addr, _this);
+}
+
+void try_call_ret_func(uint32_t dst_addr,
+                       uint32_t src_addr,
+                       int ret_flag,
+                       FuncTracer* _this) {
+    check_flag;
+    int is_func_begin = 0;
+    size_t dst_i = get_func_index_by_addr(dst_addr);
+    size_t src_i = get_func_index_by_addr(src_addr);
+    if (dst_addr == func_symbol_table[dst_i].addr)
+        is_func_begin = 1;
+    if (is_func_begin == 1) {
+        call_func(src_addr, dst_i, _this);
+    } else if (ret_flag) {
+        try_ret_func(src_i, src_addr, _this);
+    }
 }
 #endif

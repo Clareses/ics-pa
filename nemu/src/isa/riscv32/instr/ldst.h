@@ -215,13 +215,12 @@ def_EHelper(jalr) {
 
 // TODO add some code to record the function return trace
 #ifdef CONFIG_FTRACE_COND
-    if (ddest == &gpr(0) && dsrc1 == &gpr(1))
-        try_ret_func(s->dnpc, s->pc, &functracer);
-    else
-        try_call_func(s->dnpc, s->pc, &functracer);
+    try_call_ret_func(s->dnpc, s->pc, dsrc1 == &gpr(1), &functracer);
 #endif
 
 #ifdef DEBUG
+    // printf("ddest=%p, dsrc=%p, &gpr(0)=%p,
+    // &gpr(1)=%p\n",ddest,dsrc1,&(gpr(0)), &gpr(1));
     output_debug_info(s, "jalr\n");
 #endif
 }
@@ -322,6 +321,9 @@ def_EHelper(jal) {
     rtl_addi(s, ddest, &s->pc, 4);
     rtl_addi(s, &s->dnpc, &s->pc, id_src1->simm);
     gpr(0) = 0;
+#ifdef CONFIG_FTRACE_COND
+    try_call_ret_func(s->dnpc, s->pc, 0, &functracer);
+#endif
 #ifdef DEBUG
     output_debug_info(s, "jal\n");
 #endif
